@@ -7,10 +7,14 @@ var todoModule = (function() {
   // tasks-block elements
   var todoList = document.getElementById('todo-list');
   var completedList = document.getElementById('completed-list');
+  var tasksList = document.getElementsByTagName('li');
 
   function loadToDoList() {
     todoList.innerHTML = window.localStorage.getItem('todo');
     completedList.innerHTML = window.localStorage.getItem('completed');
+    for (var i = 0; i < tasksList.length; i++) {
+      tasksList[i].classList.remove('hidden');
+    }
   }
 
   function updateLocalStorage() {
@@ -58,7 +62,7 @@ var todoModule = (function() {
         }
         updateLocalStorage();
       });
-    newTask.value = '';
+      newTask.value = '';
     } else {
       newTask.value = '';
     }
@@ -86,7 +90,6 @@ var todoModule = (function() {
       }
     });
     // mark task as completed/incompleted by clicking
-    var tasksList = document.getElementsByTagName('li');
     for (var i = 0; i < tasksList.length; i++) {
       tasksList[i].addEventListener('click', function(event) {
         if (this.className === 'todo') {
@@ -132,33 +135,31 @@ var todoModule = (function() {
 
     // calculating dates for tomorrow, next week Monday and next week Sunday
     tomorrow.setDate(today.getDate() + 1);
-    nextWeekMonday.setDate(today.getDate() + ((8 - today.getDay()) % 7) + 7);
+    nextWeekMonday.setDate(
+      today.getDate() +
+        ((8 - today.getDay()) % 7) +
+        (today.getDay() === 1 ? 7 : 0)
+    );
     nextWeekSunday.setDate(today.getDate() + ((14 - today.getDay()) % 7) + 7);
 
-    var deadline;
-    if (filter.value === 'Tomorrow') {
-      for (var i = 0; i < deadlineList.length; i++) {
-        deadline = new Date(deadlineList[i].innerText);
-        deadline.setHours(0, 0, 0, 0);
-        tomorrow.setHours(0, 0, 0, 0);
+    // set time to zeros so we can compare dates
+    tomorrow.setHours(0, 0, 0, 0);
+    nextWeekMonday.setHours(0, 0, 0, 0);
+    nextWeekSunday.setHours(0, 0, 0, 0);
+
+    for (var i = 0; i < deadlineList.length; i++) {
+      var deadline = new Date(deadlineList[i].innerText);
+      if (filter.value === 'Tomorrow') {
         deadline.getTime() === tomorrow.getTime()
           ? deadlineList[i].parentNode.classList.remove('hidden')
           : deadlineList[i].parentNode.classList.add('hidden');
-      }
-    } else if (filter.value === 'Next week') {
-      for (var j = 0; j < deadlineList.length; j++) {
-        deadline = new Date(deadlineList[j].innerText);
-        deadline.setHours(0, 0, 0, 0);
-        nextWeekMonday.setHours(0, 0, 0, 0);
-        nextWeekSunday.setHours(0, 0, 0, 0);
+      } else if (filter.value === 'Next week') {
         deadline.getTime() >= nextWeekMonday.getTime() &&
         deadline.getTime() <= nextWeekSunday.getTime()
-          ? deadlineList[j].parentNode.classList.remove('hidden')
-          : deadlineList[j].parentNode.classList.add('hidden');
-      }
-    } else {
-      for (var k = 0; k < deadlineList.length; k++) {
-        deadlineList[k].parentNode.classList.remove('hidden');
+          ? deadlineList[i].parentNode.classList.remove('hidden')
+          : deadlineList[i].parentNode.classList.add('hidden');
+      } else {
+        deadlineList[i].parentNode.classList.remove('hidden');
       }
     }
   }
