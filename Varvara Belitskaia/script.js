@@ -29,7 +29,7 @@ var todoModule = (function() {
       task.setAttribute('class', 'todo');
       // add deadline (unneccesary option)
       var deadline = document.createElement('span');
-      deadline.className = 'deadline';
+      deadline.setAttribute('class', 'deadline');
       if (newDeadline.valueAsDate !== null) {
         deadline.appendChild(
           document.createTextNode(newDeadline.valueAsDate.toDateString())
@@ -42,8 +42,8 @@ var todoModule = (function() {
       todoList.appendChild(task);
       // add delete button
       var deleteButton = document.createElement('span');
-      deleteButton.className = 'delete-button';
-      deleteButton.appendChild(document.createTextNode('\u00D7'));
+      deleteButton.setAttribute('class', 'delete-button');
+      deleteButton.appendChild(document.createTextNode('\u2715'));
       task.appendChild(deleteButton);
       // delete task by clicking x button
       deleteButton.addEventListener('click', function(event) {

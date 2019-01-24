@@ -113,7 +113,6 @@ select {
 .delete-button {
   cursor: pointer;
   color: #ccc;
-  font-size: 1.2rem;
   float: right;
 }
 
