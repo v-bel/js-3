@@ -48,19 +48,11 @@ var todoModule = (function() {
       // delete task by clicking x button
       deleteButton.addEventListener('click', function(event) {
         event.stopPropagation();
-        this.parentNode.parentNode.removeChild(task);
-        updateLocalStorage();
+        deleteTask(task, task.parentNode);
       });
       // mark task as completed/incompleted by clicking
       task.addEventListener('click', function(event) {
-        if (task.className === 'todo') {
-          task.setAttribute('class', 'completed');
-          completedList.appendChild(task);
-        } else {
-          task.setAttribute('class', 'todo');
-          todoList.appendChild(task);
-        }
-        updateLocalStorage();
+        markAsCompleted(task);
       });
       newTask.value = '';
     } else {
@@ -71,14 +63,29 @@ var todoModule = (function() {
     filterListByDeadline();
   }
 
+  function deleteTask(task, parent) {
+    parent.removeChild(task);
+    updateLocalStorage();
+  }
+
+  function markAsCompleted(task) {
+    if (task.className === 'todo') {
+      task.setAttribute('class', 'completed');
+      completedList.appendChild(task);
+    } else {
+      task.setAttribute('class', 'todo');
+      todoList.appendChild(task);
+    }
+    updateLocalStorage();
+  }
+
   function setupEventListeners() {
     // delete task by clicking x button
     var deleteButtons = document.getElementsByClassName('delete-button');
     for (var i = 0; i < deleteButtons.length; i++) {
       deleteButtons[i].addEventListener('click', function(event) {
         event.stopPropagation();
-        this.parentNode.parentNode.removeChild(this.parentNode);
-        updateLocalStorage();
+        deleteTask(this.parentNode, this.parentNode.parentNode);
       });
     }
     // add task by clicking 'Add' button
@@ -92,14 +99,7 @@ var todoModule = (function() {
     // mark task as completed/incompleted by clicking
     for (var i = 0; i < tasksList.length; i++) {
       tasksList[i].addEventListener('click', function(event) {
-        if (this.className === 'todo') {
-          this.setAttribute('class', 'completed');
-          completedList.appendChild(this);
-        } else {
-          this.setAttribute('class', 'todo');
-          todoList.appendChild(this);
-        }
-        updateLocalStorage();
+        markAsCompleted(this);
       });
     }
     // filter tasks by completed/incompleted
@@ -170,6 +170,6 @@ var todoModule = (function() {
       setupEventListeners();
     }
   };
-}());
+})();
 
 todoModule.init();
