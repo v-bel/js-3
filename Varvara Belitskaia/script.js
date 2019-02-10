@@ -48,7 +48,7 @@ var todoModule = (function() {
       // delete task by clicking x button
       deleteButton.addEventListener('click', function(event) {
         event.stopPropagation();
-        deleteTask(task, task.parentNode);
+        deleteTask(task, todoList);
       });
       // mark task as completed/incompleted by clicking
       task.addEventListener('click', function(event) {
